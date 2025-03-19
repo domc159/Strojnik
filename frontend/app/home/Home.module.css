@@ -1,0 +1,280 @@
+/* app/Cube.module.css */
+@property --ty {
+    syntax: '<length-percentage>';
+    initial-value: 0%;
+    inherits: false;
+  }
+  
+  @property --ay {
+    syntax: '<angle>';
+    initial-value: -45deg;
+    inherits: false;
+  }
+  
+  @property --q {
+    syntax: '<integer>';
+    initial-value: 0;
+    inherits: false;
+  }
+  
+  @font-face {
+    font-family: 'CounterStream';
+    src: url('/fonts/counter-stream-demo.regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 12rem;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    background: linear-gradient(#1a1a1a, #1a1a1a);
+    position: relative;
+  }
+  
+  .element {
+    font-family: 'CounterStream', sans-serif;
+    font-size: 1.75rem;
+    color: var(--foreground);
+    z-index: 2;
+    letter-spacing: 2px;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    position: relative;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .element::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: #534022;
+    transform: translate(-50%, -50%) scale(0);
+    transition: all 0.3s ease;
+    z-index: -1;
+  }
+
+  .element:hover::before {
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .element:hover {
+    color: var(--background);
+  }
+
+  .title {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'CounterStream', sans-serif;
+    font-size: 4rem;
+    color: var(--foreground);
+    text-shadow: 
+      0 0 10px rgba(209, 153, 92, 0.5),
+      0 0 20px rgba(177, 122, 74, 0.5),
+      0 0 30px rgba(101, 88, 74, 0.3);
+    z-index: 2;
+    letter-spacing: 2px;
+  }
+  
+  .container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      linear-gradient(90deg, 
+        rgba(0, 0, 0, 0.7) 2px,
+        transparent 2px
+      ),
+      linear-gradient(
+        rgba(0, 0, 0, 0.7) 2px,
+        transparent 2px
+      );
+    background-size: 50px 50px;
+    opacity: 0.5;
+    mask-image: 
+      linear-gradient(
+        to right,
+        transparent,
+        black 20%,
+        black 80%,
+        transparent
+      ),
+      linear-gradient(
+        to bottom,
+        transparent,
+        black 20%,
+        black 80%,
+        transparent
+      );
+    -webkit-mask-image: 
+      linear-gradient(
+        to right,
+        transparent,
+        black 20%,
+        black 80%,
+        transparent
+      ),
+      linear-gradient(
+        to bottom,
+        transparent,
+        black 20%,
+        black 80%,
+        transparent
+      );
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+    z-index: 0;
+    animation: randomize 10s infinite;
+  }
+  
+  .cube {
+    z-index: 1;
+    position: relative;
+    --n: 9;
+    display: grid;
+    place-self: center;
+    transform-style: preserve-3d;
+    transform: 
+      translateY(var(--ty, 0))
+      rotateX(-35deg) 
+      rotateY(calc(var(--ay, -45deg) - var(--q, 0) * 90deg));
+    animation: 
+      ty 2s ease-in-out infinite alternate, 
+      ay 4s ease-in-out infinite, 
+      q 4s steps(1) infinite;
+  }
+  
+  .face {
+    --i: 0;
+    --j: calc(1 - var(--i));
+    grid-area: 1/1;
+    display: grid;
+    transform-style: preserve-3d;
+    grid-template: repeat(var(--n), 2em) / repeat(var(--n), 2em);
+    transform: 
+      rotate3d(var(--i), var(--j), 0, calc(var(--f, 1) * 90deg)) 
+      translateZ(calc(0.5 * var(--n) * 2em));
+  }
+  
+  .face:last-child {
+    --i: 1;
+  }
+  
+  .tile {
+    --m: calc(0.5 * (var(--n) - 1));
+    --dx: max(var(--m) - var(--x), var(--x) - var(--m));
+    --dy: max(var(--m) - var(--y), var(--y) - var(--m));
+    --dt: calc((
+      var(--j) * (0.5 * (var(--dx) + var(--y) + var(--m)) / var(--m) - 2) + 
+      var(--i) * (0.5 * (var(--dx) + var(--dy)) / var(--m) - 2)) * 2s);
+    backface-visibility: hidden;
+    border-radius: 5px;
+    box-shadow: 
+      0 0 2px 2px rgba(209, 153, 92, 0.5),
+      inset 0 0 2px 2px rgba(209, 153, 92, 0.5),
+      0 0 5px 2px currentcolor,
+      inset 0 0 7px 2px currentcolor;
+    background: #53402269;
+    color: var(--foreground);
+    animation: 
+      moveAnimation 1s var(--dt) infinite alternate ease-in-out,
+      colorAnimation 6s var(--dt) infinite linear;
+  }
+  
+  /* Generate tile position styles */
+  .tile:nth-child(9n + 1) { --x: 0; }
+  .tile:nth-child(9n + 2) { --x: 1; }
+  .tile:nth-child(9n + 3) { --x: 2; }
+  .tile:nth-child(9n + 4) { --x: 3; }
+  .tile:nth-child(9n + 5) { --x: 4; }
+  .tile:nth-child(9n + 6) { --x: 5; }
+  .tile:nth-child(9n + 7) { --x: 6; }
+  .tile:nth-child(9n + 8) { --x: 7; }
+  .tile:nth-child(9n + 9) { --x: 8; }
+  
+  .tile:nth-child(n + 1) { --y: 0; }
+  .tile:nth-child(n + 10) { --y: 1; }
+  .tile:nth-child(n + 19) { --y: 2; }
+  .tile:nth-child(n + 28) { --y: 3; }
+  .tile:nth-child(n + 37) { --y: 4; }
+  .tile:nth-child(n + 46) { --y: 5; }
+  .tile:nth-child(n + 55) { --y: 6; }
+  .tile:nth-child(n + 64) { --y: 7; }
+  .tile:nth-child(n + 73) { --y: 8; }
+  
+  @keyframes ty {
+    to { --ty: 22.5%; }
+  }
+  
+  @keyframes ay {
+    to { --ay: 45deg; }
+  }
+  
+  @keyframes q {
+    50% { --q: 1; }
+  }
+  
+  @keyframes moveAnimation {
+    to { 
+      transform: translateZ(calc(0.5 * (0.2 - 1) * 2em)) scale(0.2);
+    }
+  }
+  
+  @keyframes colorAnimation {
+    0% { color: #d1995c; }
+    20% { color: #b17a4a; }
+    40% { color: #b87e40; }
+    60% { color: #ff8400; }
+    80% { color: #534022; }
+    95% { color: #252729; }
+  }
+
+  @keyframes randomize {
+    0%, 100% {
+      --random-1: 0.3;
+      --random-2: 0.6;
+    }
+    25% {
+      --random-1: 0.1;
+      --random-2: 0.4;
+    }
+    50% {
+      --random-1: 0.5;
+      --random-2: 0.8;
+    }
+    75% {
+      --random-1: 0.2;
+      --random-2: 0.7;
+    }
+  }
+
+  .chatContainer {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 33.333%; /* tretjina zaslona */
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 1000;
+  }
+
+  .mainContent {
+    width: 66.666%; /* preostali dve tretjini */
+    margin-right: 33.333%;
+  }

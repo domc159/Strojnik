@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Tekstovne barve */
+  --text-primary: #c17817;    /* Glavna barva besedila - zlato rjava */
+  --text-secondary: #c78d50;  /* Sekundarna barva besedila - temno bež */
+  --text-tertiary: #8b7355;   /* Terciarna barva besedila - temno oranžna */
+  
+  /* Utility barve */
+  --utility-accent: #635c47;  /* Poudarjena barva - olivno siva */
+  --utility-muted: #554321;   /* Umirjena barva - temno rjava */
+  
+  /* Obstoječe barve */
+  --background: #252729;
+  --foreground: #d1995c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #252729;
+    --foreground: #d1995c;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    linear-gradient(90deg, 
+      rgba(0, 0, 0, 0.658) 2px,
+      transparent 2px
+    ),
+    linear-gradient(
+      rgba(0, 0, 0, 0.658) 2px,
+      transparent 2px
+    );
+  background-size: 50px 50px;
+  opacity: 0.5;
+  mask-image: 
+    linear-gradient(
+      to right,
+      transparent,
+      black 20%,
+      black 80%,
+      transparent
+    ),
+    linear-gradient(
+      to bottom,
+      transparent,
+      black 20%,
+      black 80%,
+      transparent
+    );
+  -webkit-mask-image: 
+    linear-gradient(
+      to right,
+      transparent,
+      black 20%,
+      black 80%,
+      transparent
+    ),
+    linear-gradient(
+      to bottom,
+      transparent,
+      black 20%,
+      black 80%,
+      transparent
+    );
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+  z-index: -1;
+}
